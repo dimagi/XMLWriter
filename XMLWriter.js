@@ -65,7 +65,7 @@ XMLWriter.prototype = {
 	//add an attribute to the active node
 	writeAttributeString:function( name, value ){
 		if( this.active )
-			this.active.a[name] = html(value);
+			this.active.a[name] = htmlAttr(value);
 	},
 	//add a pre-escaped attribute to the active node
 	writeRawAttributeString:function( name, value ){
@@ -145,10 +145,26 @@ XMLWriter.prototype = {
 	}
 };
 
+var ESCAPES = {
+	'&': '&amp;',
+	'<': '&lt;',
+	'>': '&gt;',
+	'"': '&quot;',
+	'\t': '&#9;',
+	'\n': '&#10;',
+	'\r': '&#13;'
+};
+
 function html(s) {
-	return s.split('&').join('&amp;').split( '<').join('&lt;').split('>').join('&gt;').split('"').join('&quot;')
+	return s.replace(/[&<>"]/g, function (c) { return ESCAPES[c]; });
 }
 
+// Escape whitespace in attributes so it is preserved during in-browser
+// serialize/parse round-trip.
+// See http://www.w3.org/TR/REC-xml/#AVNormalize for browser parsing rules.
+function htmlAttr(s) {
+	return s.replace(/[&<>"\n\r\t]/g, function (c) { return ESCAPES[c]; });
+}
 
 //utility, you don't need it
 function clean( node ){
