@@ -2,13 +2,11 @@
  * XMLWriter - XML generator for Javascript, based on .NET's XMLTextWriter.
  * Copyright (c) 2008 Ariel Flesler - aflesler(at)gmail(dot)com | http://flesler.blogspot.com
  * Licensed under BSD (http://www.opensource.org/licenses/bsd-license.php)
- * Date: 3/12/2008
- * @version 1.0.0
- * @author Ariel Flesler
- * http://flesler.blogspot.com/2008/03/xmlwriter-for-javascript.html
  *
- *  Modifications:
- *   02/26/2011 - Fixed standalone and added html for escaping (alexandern)
+ * @version 1.1.0
+ * @author Ariel Flesler, alexandern, Daniel Miller
+ *
+ * Original version: http://flesler.blogspot.com/2008/03/xmlwriter-for-javascript.html
  */
 
 function XMLWriter( encoding, version ){
@@ -69,15 +67,25 @@ XMLWriter.prototype = {
 		if( this.active )
 			this.active.a[name] = html(value);
 	},
-	//add a text node to the active node
+	//add a pre-escaped attribute to the active node
+	writeRawAttributeString:function( name, value ){
+		if( this.active )
+			this.active.a[name] = value;
+	},
+	//add a text node to the active node (XML will be escaped)
 	writeString:function( text ){
 		if( this.active )
 			this.active.c.push(html(text));
 	},
+	//add XML string to the active node without extra escaping
+	writeXML:function( text ){
+		if( this.active )
+			this.active.c.push(text);
+	},
 	//shortcut, open an element, write the text and close
 	writeElementString:function( name, text, ns ){
 		this.writeStartElement( name, ns );
-		this.writeString( html(text) );
+		this.writeString(text);
 		this.writeEndElement();
 	},
 	//add a text node wrapped with CDATA
