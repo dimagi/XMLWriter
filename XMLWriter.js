@@ -163,7 +163,7 @@ function html(s) {
 // serialize/parse round-trip.
 // See http://www.w3.org/TR/REC-xml/#AVNormalize for browser parsing rules.
 function htmlAttr(s) {
-	return s.replace(/[&<>"\n\r\t]/g, function (c) { return ESCAPES[c]; });
+	return String(s).replace(/[&<>"\n\r\t]/g, function (c) { return ESCAPES[c]; });
 }
 
 //utility, you don't need it
